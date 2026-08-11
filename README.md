@@ -1,5 +1,8 @@
 # Zygisk Gadget (Custom Linker) —— stealth frida-gadget 注入模块
 
+> 📖 **使用教程**：见 [`使用教程.md`](使用教程.md)（部署/验证/连接/配置/常见问题）
+> 成品下载：仓库 Releases 页（`zygisk_gadget_delivery.zip`）
+
 > 适用：frida-gadget 17.9.1 (stealth) · Pixel 8 / Android 15 · KernelSU + Zygisk Next
 > 验证日期：2026-07-27（真机通过）
 > 相关公开参考：`SoyBeanMilkx/soLoader`（自定义 linker 源头）、`jiqiu2022/Zygisk-MyInjector`（mylinker 集成脚手架）
