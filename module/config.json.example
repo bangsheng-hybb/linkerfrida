@@ -1,6 +1,6 @@
 {
-  "com.netease.TomJerry": {
-    "process": "com.netease.TomJerry",
+  "com.netease.tom": {
+    "process": "com.netease.tom",
     "inject": true,
     "use_custom_linker": true,
     "delay_us": 0,
