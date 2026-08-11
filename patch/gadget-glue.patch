@@ -1,0 +1,78 @@
+--- a/subprojects/frida-core/lib/gadget/gadget-glue.c
++++ b/subprojects/frida-core/lib/gadget/gadget-glue.c
+@@ -1,5 +1,9 @@
+ #include "gadget-glue.h"
+ 
++#if defined (HAVE_LINUX) || defined (HAVE_ANDROID)
++#include <stdlib.h>
++#include <string.h>
++#endif
++
+ #if defined (HAVE_DARWIN)
+ #include <mach-o/getsect.h>
+ #include <dlfcn.h>
+@@ -50,10 +54,34 @@ static void
+ frida_on_load (int argc, const char * argv[], const char * envp[], const char * apple[], int * result)
+ {
+   GumMemoryRange range = { 0, 0 };
+   gboolean found_range = FALSE;
+   gchar * config_data = NULL;
+ 
++  (void) argc;
++  (void) argv;
++  (void) envp;
++
+   frida_parse_apple_parameters (apple, &found_range, &range, &config_data);
+ 
+   frida_gadget_load (found_range ? &range : NULL, config_data, result);
+@@ -68,10 +96,36 @@ static void
+ frida_on_load (void)
+ {
+-  frida_gadget_load (NULL, NULL, NULL);
++  GumMemoryRange range = { 0, 0 };
++  gboolean found_range = FALSE;
++  gchar * config_data = NULL;
++  const gchar * env;
++
++  /*
++   * Custom linker bridge:
++   *
++   * The gadget is loaded by a custom ELF loader (mylinker) instead of the
++   * system linker, so it never appears in the linker's module chain and
++   * Gum.Process.enumerate_modules () cannot find it. This makes
++   * detect_location () hit "assert (our_range != null)" and abort.
++   *
++   * The loader knows the gadget's base/size and passes it via the
++   * FRIDA_GADGET_RANGE environment variable ("<base_hex>,<size_hex>").
++   * Likewise the module passes the gadget config payload via
++   * FRIDA_GADGET_CONFIG (the loader also cannot provide our_path, so
++   * load_config () would never find the .config.so file next to it).
++   *
++   * Both variables are consumed and unset immediately so nothing leaks.
++   */
++  env = getenv ("FRIDA_GADGET_RANGE");
++  if (env != NULL)
++  {
++    const gchar * comma = strchr (env, ',');
++    if (comma != NULL)
++    {
++      range.base_address = (GumAddress) strtoull (env, NULL, 16);
++      range.size = (gsize) strtoull (comma + 1, NULL, 16);
++      found_range = TRUE;
++    }
++    unsetenv ("FRIDA_GADGET_RANGE");
++  }
++
++  env = getenv ("FRIDA_GADGET_CONFIG");
++  if (env != NULL)
++  {
++    config_data = g_strdup (env);
++    unsetenv ("FRIDA_GADGET_CONFIG");
++  }
++
++  frida_gadget_load (found_range ? &range : NULL, config_data, NULL);
++
++  g_free (config_data);
+ }
+ 
+ #endif

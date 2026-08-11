@@ -1,0 +1,11 @@
+{
+  "com.netease.TomJerry": {
+    "process": "com.netease.TomJerry",
+    "inject": true,
+    "use_custom_linker": true,
+    "delay_us": 0,
+    "pin_module": false,
+    "gadget_name": "libhhh.so",
+    "gadget_config": "libhhh.config.so"
+  }
+}

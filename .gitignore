@@ -1,0 +1,26 @@
+# 部署产物 / 二进制（不推送）
+release/
+dist/
+download/
+module/libs/
+module/zygisk/
+module/libgadget.so
+module/obj/
+module/local/
+
+# 通用二进制与包
+*.so
+*.zip
+*.kpm
+*.gz
+*.xz
+
+# 设备/个人配置（含目标包名等敏感信息）
+config.json
+libhhh.config.so
+
+# 系统/编辑器
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/

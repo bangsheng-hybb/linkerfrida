@@ -1,0 +1,7 @@
+id=zygisk_gadget
+name=Zygisk Gadget (Custom Linker)
+version=v1.0.0
+versionCode=100
+author=xiaojia
+description=Zygisk module that loads stealth frida gadget via custom ELF linker (memfd:jit-cache)
+minMagisk=26401
